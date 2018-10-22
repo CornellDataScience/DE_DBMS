@@ -14,7 +14,7 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 
 public class Parser {
-	private static final String queriesFile = "queries.sql";
+	private static final String queriesFile = "input/queries.sql";
 
 	public static void main(String[] args) {
 		try {
