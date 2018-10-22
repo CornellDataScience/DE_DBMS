@@ -1,3 +1,0 @@
-samples3/input
-samples3/output
-samples3/temp
