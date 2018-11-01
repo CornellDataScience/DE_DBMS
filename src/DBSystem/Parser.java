@@ -17,6 +17,7 @@ public class Parser {
 	private static String queriesFile = "";
 
 	public static void main(String[] args) {
+		
 		try {
 			queriesFile = args[0] + "/queries.sql";
 			dbCatalog.catalog = new dbCatalog(args[0]);
