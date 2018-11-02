@@ -31,8 +31,21 @@ public class Table {
 	 */
 	public Table(String name, ArrayList<Tuple> tuples) {
 		this.name = name;
-		// TODO convert the tuples to columns
-		// this.tuples = tuples;
+		ArrayList<ArrayList<Object>> columnsDataGenerated = new ArrayList<ArrayList<Object>>();
+		int tupleSize = tuples.get(0).getSize();
+		
+		for (Tuple t : tuples) {
+			for (int i = 0; i < tupleSize; i++) {
+				columnsDataGenerated.get(0).add(t.get(i));// ith column will be added the data t.get(i)
+			}
+		}
+
+		ArrayList<Column> columnsGenerated = new ArrayList<Column>();
+		for (int i = 0; i < tupleSize; i++) {
+			// TODO column name ???
+			columnsGenerated.add(new Column("COLUMN", columnsDataGenerated.get(0)));
+		}
+		this.columns = columnsGenerated;
 	}
 	
 	/**
