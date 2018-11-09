@@ -6,7 +6,6 @@ public class Table {
 	private List<Tuple> tuples;
 	private List<Column> columns;
 	private HashMap<String, Integer> colIndicies = new HashMap<String, Integer>();
-	private HashMap<Column, Integer> columnIndexed = new HashMap<Column, Integer>();
 
 	/**
 	 * Method to construct Tuple from name, list of tuples, list of columns
@@ -19,7 +18,6 @@ public class Table {
 		this.columns = columns;
 		for (int i = 0; i < columns.size(); i++) {
 			colIndicies.put(columns.get(i).getName(), i);
-			columnIndexed.put(columns.get(i), i);
 		}
 		
 	}
@@ -47,6 +45,15 @@ public class Table {
 		}
 		this.columns = columnsGenerated;
 	}
+	/**
+	 * 
+	 * @param name of the column needed to be accessed 
+	 * @return the column from the name of the column  
+	 */
+	public Column getCol(String name) {
+		return columns.get(colIndicies.get(name));
+	}
+	
 	
 	/**
 	 * The function to get the name of the table
