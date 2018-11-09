@@ -20,14 +20,16 @@ public class ScanOperator extends Operator {
 		table = dbCatalog.getTable(tableName);
 	}
 
-	@Override
-	public Tuple getNextTuple() {
-		// TODO
-		return null;
-	}
+	
 
 	@Override
 	public void reset() {
+	}
+
+	@Override
+	public Table operate() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -3,7 +3,6 @@ import java.util.*;
 
 public class Table {
 	private String name;
-	private List<Tuple> tuples;
 	private List<Column> columns;
 	private HashMap<String, Integer> colIndicies = new HashMap<String, Integer>();
 
@@ -12,9 +11,8 @@ public class Table {
 	 * 
 	 * @return the constructed Tuple
 	 */
-	public Table(String name, List<Tuple> tuples, List<Column> columns) {
+	public Table(String name, List<Column> columns) {
 		this.name = name;
-		this.tuples = tuples;
 		this.columns = columns;
 		for (int i = 0; i < columns.size(); i++) {
 			colIndicies.put(columns.get(i).getName(), i);

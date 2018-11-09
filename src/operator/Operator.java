@@ -25,7 +25,7 @@ public abstract class Operator {
 	 * 
 	 * @return the next Tuple of the Operator
 	 */
-	public abstract Tuple getNextTuple();
+	public abstract Table operate();
 
 	/**
 	 * Method to tell the operator to reset its state and start returning its
@@ -45,10 +45,12 @@ public abstract class Operator {
 		n++;
 		Tuple t;
 		PrintStream out = new PrintStream(new FileOutputStream("query" + n + ".txt"));
+		/*
 		while ((t = getNextTuple()) != null) {
 			System.out.println(t);
 		}
 		out.close();
+		*/
 	}
 
 }

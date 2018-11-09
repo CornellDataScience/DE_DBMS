@@ -75,7 +75,7 @@ public class dbCatalog {
 					Column column = new Column(splitArray[i + 1], items);
 					columns.add(column);
 				}
-				Table table = new Table(header[0], tuples, columns);
+				Table table = new Table(header[0],columns);
 				names.add(header[0]);
 				tables.add(table);
 			}
