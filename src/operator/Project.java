@@ -12,9 +12,9 @@ import DBSystem.dbCatalog;
 public class Project extends Operator {
 
 	/**
-	 * Project Operator which is the basic component in the operator tree. The
-	 * operator tree we constructed should have scan operator as its leaves
-	 * 
+	 * Project Operator is used when the select keyword is called without 
+	 * any selection criteria. Therefore, certain columns are projected and 
+	 * returned as a new Table. 
 	 */
 
 	Table table;
