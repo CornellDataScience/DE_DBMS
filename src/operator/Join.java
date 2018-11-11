@@ -41,10 +41,13 @@ public class Join extends Operator {
 		for(int i = 0; i < tables.size(); i ++) {
 			cols.add(tables.get(i).getCol(colNames.get(i)));
 		}
+		//Creating hashmaps for each table in tables to use in hash join
 		for(int i = 0; i < tables.size(); i ++) {
 			HashMap<Integer,elem> map = new HashMap<Integer, elem>();
 			for(int j = 0; j < cols.get(i).getSize(); j ++) {
 				//Put hash mapped to elem instance of object and its index
+				Object currentElem = cols.get(i).getData(j);
+				map.put(currentElem.hashCode(), new elem(j,currentElem));
 			}
 		}
 		return new Table(tableName, cols);
@@ -57,8 +60,8 @@ public class Join extends Operator {
 	private class elem {
 		private Object o;
 		private int index;
-		
-		public elem(Object o, int index) {
+
+		public elem(int index, Object o) {
 			this.o = o;
 			this.index = index;
 		}
