@@ -21,6 +21,7 @@ public class Project extends Operator {
 	Table origTable;
 	String tableName;
 	List<Column> cols;
+	List<String> colNames;
 	
 	
 
@@ -28,15 +29,17 @@ public class Project extends Operator {
 		table = dbCatalog.getTable(tableName);
 		this.tableName = tableName;
 		origTable = table;
+		this.colNames = colNames;
+		
+	}
+
+	@Override
+	public Table operate() {
 		List<Column> cols = new ArrayList<Column>();
 		for(String s: colNames) {
 			cols.add(table.getCol(s));
 		}
 		this.cols = cols;
-	}
-
-	@Override
-	public Table operate() {		
 		return new Table(tableName, cols);
 	}
 
