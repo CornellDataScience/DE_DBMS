@@ -42,7 +42,7 @@ public class Join extends Operator {
 			cols.add(tables.get(i).getCol(colNames.get(i)));
 		}
 		//Creating hashmaps for each table in tables to use in hash join
-		for(int i = 0; i < tables.size(); i ++) {
+		for(int i = 0; i < cols.size(); i ++) {
 			HashMap<Integer,elem> map = new HashMap<Integer, elem>();
 			for(int j = 0; j < cols.get(i).getSize(); j ++) {
 				//Put hash mapped to elem instance of object and its index
