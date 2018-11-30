@@ -1,20 +1,34 @@
 package operator;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import DBSystem.Column;
 import DBSystem.Table;
+import net.sf.jsqlparser.statement.select.Distinct;
 
-public class DuplicateEliminationOperator extends Operator {
+public class DuplicateElimination extends Operator {
 
 	/**
 	 * DuplicateEliminationOperator which exits as long as there is a DISTICT
 	 * keyword in the SQL language
 	 * 
 	 */
-
+	
+	private Distinct dist;
 	private Operator child;
+	private int queryNum;
+	private String outputdir;
+	
+	public DuplicateElimination(Operator sortOp, Distinct distinct, String loc, int queryNum) {
+		child = sortOp;
+		dist = distinct;
+		outputdir = loc;
+		this.queryNum = queryNum;
+	}
 	
 	// We assume the input from its child is in sorted order
 	@Override
@@ -54,4 +68,13 @@ public class DuplicateEliminationOperator extends Operator {
 		child.reset();
 	}
 
+	@Override
+	public void dump() throws FileNotFoundException {
+		PrintStream out = new PrintStream(new FileOutputStream(outputdir + "/query" + queryNum + ".txt"));
+		Table t = operate();
+		System.setOut(out);
+		System.out.println(t);
+		out.close();
+	}
+	
 }
