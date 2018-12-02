@@ -2,78 +2,59 @@ package operator;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Stack;
 
 import DBSystem.Table;
-import DBSystem.Tuple;
-import DBSystem.dbCatalog;
+import DBSystem.Column;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.arithmetic.*;
 import net.sf.jsqlparser.expression.operators.conditional.*;
 import net.sf.jsqlparser.expression.operators.relational.*;
-import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.SubSelect;
 
-public class ExpressionVisitorClass implements ExpressionVisitor{
-	
+public class ExpressionVisitorClass implements ExpressionVisitor {
+
 	/**
-	 * Class for the Expression class that can visit the expression recursively
-	 * to find out the whether the condition is true or not, what it differs
-	 * from ExpressionVisitorV1 is that it only takes in one table for column
-	 * reference, while V1 will take two
+	 * Class for the Expression class that can visit the expression recursively to
+	 * find out the whether the condition is true or not, what it differs from
+	 * ExpressionVisitorV1 is that it only takes in one table for column reference,
+	 * while V1 will take two
 	 * 
-	 * The logic is based on recursion and visitor pattern. We start the
-	 * function by visiting the root node. Then for every kind of node, we add
-	 * its data(boolean or number) to the result list, and then visit its
-	 * children nodes if it has them.
+	 * The logic is based on recursion and visitor pattern. We start the function by
+	 * visiting the root node. Then for every kind of node, we add its data(boolean
+	 * or number) to the result list, and then visit its children nodes if it has
+	 * them.
 	 * 
-	 * @author Rong Tan (rt389) Akhil Gopu (akg68)
+	 * @author Rong Tan (rt389)
 	 */
 
-	private Stack<Boolean> booleanStack;
+	Expression expression;
+	Table table;
+	private Stack<HashSet<Integer>> indicesStack;
 	private Stack<Double> numberStack;
-	private Tuple t; // running string representation
-	public boolean status = false;
-	private HashSet<String> tableName = new HashSet<String>();
-	private HashMap<String, Tuple> map = new HashMap<String, Tuple>();
+	private Stack<Integer> ColumnOrNumberStack;
+	// 0 means a column, 1 means original column from table, 2 means modified column in ModifiedColumnStack
+	private Stack<Column> columnStack;
 
-	public ExpressionVisitorClass(String name) {
-		booleanStack = new Stack<Boolean>();
-		numberStack = new Stack<Double>();
-		tableName.add(name);
-	}
-	
-	public ExpressionVisitorClass(String name, Tuple t,  String name2, Tuple t2) {
-		booleanStack = new Stack<Boolean>();
-		numberStack = new Stack<Double>();
-		tableName.add(name);
-		tableName.add(name2);
-		map.put(name, t);
-		map.put(name2, t2);
-	}
-	/**
-	 * Method to get the result boolean when visitor is done
-	 * 
-	 * @return whether the expression is evaluated as true or false
-	 */
-	public boolean evaluate() {
-		return booleanStack.peek();
+	public ExpressionVisitorClass(Expression expression, Table table) {
+		this.expression = expression;
+		this.table = table;
+		indicesStack = new Stack<HashSet<Integer>>();
 	}
 
 	/**
-	 * Method to set the Tuple to be visited in the Visitor
+	 * Method to get the set of all the ids of the tuples in the column when
+	 * evaluated
 	 * 
-	 * @param the
-	 *            Tuple to evaluate
+	 * @return whether hashset containing all the ids of tuples evaluated
 	 */
-	public void setT(Tuple t) {
-		this.t = t;
+	public HashSet<Integer> evaluate() {
+		return indicesStack.peek();
 	}
-	
+
 	/**
-	 * Method to attach the evaluation of AndExpression depending on the left
-	 * and right side
+	 * Method to attach the evaluation of AndExpression depending on the left and
+	 * right side
 	 * 
 	 * @param the
 	 *            AndExpression to evaluate
@@ -82,9 +63,31 @@ public class ExpressionVisitorClass implements ExpressionVisitor{
 	public void visit(AndExpression arg0) {
 		arg0.getLeftExpression().accept(this);
 		arg0.getRightExpression().accept(this);
-		boolean tmp2 = booleanStack.pop();
-		boolean tmp1 = booleanStack.pop();
-		booleanStack.push(tmp1 && tmp2);
+		HashSet<Integer> tmp2 = indicesStack.pop();
+		HashSet<Integer> tmp1 = indicesStack.pop();
+		// find the intersection of two indices set
+		HashSet<Integer> intersection = new HashSet<Integer>(tmp1);
+		intersection.retainAll(tmp2);
+		indicesStack.push(intersection);
+	}
+
+	/**
+	 * Method to attach the evaluation of OrExpression depending on the left and
+	 * right side
+	 * 
+	 * @param the
+	 *            OrExpression to evaluate
+	 */
+	@Override
+	public void visit(OrExpression arg0) {
+		arg0.getLeftExpression().accept(this);
+		arg0.getRightExpression().accept(this);
+		HashSet<Integer> tmp2 = indicesStack.pop();
+		HashSet<Integer> tmp1 = indicesStack.pop();
+		// find the union of two indices set
+		HashSet<Integer> intersection = new HashSet<Integer>(tmp1);
+		intersection.addAll(tmp2);
+		indicesStack.push(intersection);
 	}
 
 	/**
@@ -93,45 +96,8 @@ public class ExpressionVisitorClass implements ExpressionVisitor{
 	 * @param the
 	 *            Column to evaluate
 	 */
-	@Override
 	public void visit(Column arg0) {
-		String name = arg0.getTable().getName();
-		if (tableName.contains(name) == false)
-		{
-			status = true;
-			numberStack.push(0.0);
-			return;
-		}
-		if (tableName.contains(name) || (tableName.contains(dbCatalog.getAlias(name).getName())))
-		{
-			String colName = arg0.getColumnName();
-			Table table = dbCatalog.getTable(name);
-			if (table == null)
-				table = dbCatalog.getAlias(name);
-			if (map.isEmpty())
-			{	
-				// TODO visit specific value in column
-//				String specificValue = (String) table.getTupleSpecific(t, colName);
-//				Double value = Double.valueOf(specificValue);
-//				numberStack.push(value);
-			}
-			else
-			{	
-				// TODO visit specific value in column
-//				Tuple t = map.get(name);
-//				if (t == null)
-//					t = map.get(dbCatalog.getAlias(name).getName());
-//				String specificValue = (String) table.getTupleSpecific(t, colName);
-//				Double value = Double.valueOf(specificValue);
-//				numberStack.push(value);
-			}
-		}
-		else
-		{
-			status = true;
-			numberStack.push(0.0);
-		}
-		return;
+		
 	}
 
 	/**
@@ -143,8 +109,18 @@ public class ExpressionVisitorClass implements ExpressionVisitor{
 	@Override
 	public void visit(LongValue arg0) {
 		numberStack.push(arg0.toDouble());
+		ColumnOrNumberStack.push(0);
 	}
 
+	
+	/**
+	 * cases:
+	 * a.id == 2
+	 * a.id + 2 == 2
+	 * a.id == a.gpa
+	 * a.id + 2 == a.gpa + 2
+	 * a.id * a.gpa == 2
+	 */
 	/**
 	 * Method to attach the evaluation of EqualsTo expression
 	 * 
@@ -155,9 +131,36 @@ public class ExpressionVisitorClass implements ExpressionVisitor{
 	public void visit(EqualsTo arg0) {
 		arg0.getLeftExpression().accept(this);
 		arg0.getRightExpression().accept(this);
-		double tmp2 = numberStack.pop();
-		double tmp1 = numberStack.pop();
-		booleanStack.push(tmp1 == tmp2);
+		int CoN2 = ColumnOrNumberStack.pop();
+		int CoN1 = ColumnOrNumberStack.pop();
+		HashSet<Integer> result = new HashSet<Integer>();
+		// check if both are number
+		if (CoN1 == 0 && CoN2 == 0) {
+			double tmp2 = numberStack.pop();
+			double tmp1 = numberStack.pop();
+			if (tmp1 == tmp2) {
+				// create a new set containing all the ids 
+				for (int i = 0; i < table.getTupleNum(); i++)
+					result.add(i);
+				indicesStack.push(result);
+			} else {
+				// create a new set containing no id
+				indicesStack.push(result);
+			}
+		// CoN1 is number, CoN2 is column
+		} else if (CoN1 == 0 && CoN2 == 1) {
+			double tmp1 = numberStack.pop();
+			Column columnToCompare = columnStack.pop();
+			// get all the indices of tuples which value in columnToCompare equals to tmp1
+			for (int i = 0; i < columnToCompare.getSize(); i++) {
+				if (columnToCompare.getData(i) instanceof Double && (Double)columnToCompare.getData(i) == tmp1) {
+					result.add(i);
+				}
+			}
+			indicesStack.push(result);
+		} 
+		// TODO if one of them is column?
+		// return all the indices that matches the boolean value
 	}
 
 	/**
@@ -172,7 +175,6 @@ public class ExpressionVisitorClass implements ExpressionVisitor{
 		arg0.getRightExpression().accept(this);
 		double tmp2 = numberStack.pop();
 		double tmp1 = numberStack.pop();
-		booleanStack.push(tmp1 != tmp2);
 	}
 
 	/**
@@ -187,7 +189,6 @@ public class ExpressionVisitorClass implements ExpressionVisitor{
 		arg0.getRightExpression().accept(this);
 		double tmp2 = numberStack.pop();
 		double tmp1 = numberStack.pop();
-		booleanStack.push(tmp1 > tmp2);
 	}
 
 	/**
@@ -202,7 +203,6 @@ public class ExpressionVisitorClass implements ExpressionVisitor{
 		arg0.getRightExpression().accept(this);
 		double tmp2 = numberStack.pop();
 		double tmp1 = numberStack.pop();
-		booleanStack.push(tmp1 >= tmp2);
 	}
 
 	/**
@@ -217,7 +217,6 @@ public class ExpressionVisitorClass implements ExpressionVisitor{
 		arg0.getRightExpression().accept(this);
 		double tmp2 = numberStack.pop();
 		double tmp1 = numberStack.pop();
-		booleanStack.push(tmp1 < tmp2);
 	}
 
 	/**
@@ -232,7 +231,6 @@ public class ExpressionVisitorClass implements ExpressionVisitor{
 		arg0.getRightExpression().accept(this);
 		double tmp2 = numberStack.pop();
 		double tmp1 = numberStack.pop();
-		booleanStack.push(tmp1 <= tmp2);
 	}
 
 	// Methods which do not need implementation
@@ -244,26 +242,8 @@ public class ExpressionVisitorClass implements ExpressionVisitor{
 	}
 
 	@Override
-	public void visit(Function arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void visit(InverseExpression arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void visit(JdbcParameter arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void visit(DoubleValue arg0) {
-		// TODO Auto-generated method stub
+		// TODO 
 
 	}
 
@@ -305,121 +285,134 @@ public class ExpressionVisitorClass implements ExpressionVisitor{
 
 	@Override
 	public void visit(Division arg0) {
-		// TODO Auto-generated method stub
+		// TODO 
 
 	}
 
 	@Override
 	public void visit(Multiplication arg0) {
-		// TODO Auto-generated method stub
+		// TODO 
 
 	}
 
 	@Override
 	public void visit(Subtraction arg0) {
-		// TODO Auto-generated method stub
+		// TODO 
 
 	}
 
 	@Override
-	public void visit(OrExpression arg0) {
+	public void visit(Function arg0) {
 		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public void visit(InverseExpression arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(JdbcParameter arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void visit(Between arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(InExpression arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(IsNullExpression arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(LikeExpression arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(SubSelect arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(CaseExpression arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(WhenClause arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(ExistsExpression arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(AllComparisonExpression arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(AnyComparisonExpression arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(Concat arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(Matches arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(BitwiseAnd arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(BitwiseOr arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void visit(BitwiseXor arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
-	public List<Integer> operate() {
+	@Override
+	public void visit(net.sf.jsqlparser.schema.Column arg0) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 }

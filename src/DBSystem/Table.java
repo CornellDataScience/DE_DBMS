@@ -89,4 +89,13 @@ public class Table {
 	public List<Column> getColumns() {
 		return columns;
 	}
+	
+	/**
+	 * Method to get the number of tuples in the table
+	 * 
+	 * @return the number of tuples in the table
+	 */
+	public int getTupleNum() {
+		return columns.get(0).getSize();
+	}
 }
