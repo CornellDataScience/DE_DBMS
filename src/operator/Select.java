@@ -32,6 +32,12 @@ public class Select extends Operator {
 		this.where = where;		
 		
 	}
+	public Select(String tableName, Expression where) {
+		
+		table = dbCatalog.getTable(tableName);
+		this.where = where;		
+		
+	}
 
 	@Override
 	public Table operate() {

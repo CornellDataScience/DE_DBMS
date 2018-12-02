@@ -9,6 +9,7 @@ import java.util.List;
 import DBSystem.Column;
 import DBSystem.Tuple;
 import DBSystem.dbCatalog;
+import net.sf.jsqlparser.expression.Expression;
 
 public class Join extends Operator {
 
@@ -23,7 +24,7 @@ public class Join extends Operator {
 
 
 
-	public Join(List<String> tableNames, List<String> colNames) {
+	public Join(List<String> tableNames, List<String> colNames, Expression join) {
 		tables = new ArrayList<Table>();
 		origTables = new ArrayList<Table>();
 		for(String s: tableNames) {
