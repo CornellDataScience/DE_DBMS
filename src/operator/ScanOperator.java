@@ -19,6 +19,9 @@ public class ScanOperator extends Operator {
 	public ScanOperator(String tableName) {
 		table = dbCatalog.getTable(tableName);
 	}
+	public Table getTable() {
+		return table;
+	}
 
 	
 

@@ -2,6 +2,7 @@ package operator;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Stack;
 
 import DBSystem.Table;
@@ -51,7 +52,6 @@ public class ExpressionVisitorClass implements ExpressionVisitor{
 		map.put(name, t);
 		map.put(name2, t2);
 	}
-
 	/**
 	 * Method to get the result boolean when visitor is done
 	 * 
@@ -415,6 +415,11 @@ public class ExpressionVisitorClass implements ExpressionVisitor{
 	public void visit(BitwiseXor arg0) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public List<Integer> operate() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

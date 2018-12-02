@@ -61,7 +61,26 @@ public class Table {
 	public String getName() {
 		return name;
 	}
-	
+	/** This function gets the rows at given indicies
+	 * 
+	 * @param indices indices of rows wanted
+	 * @return a Table instance of the rows
+	 */
+	public void addColumn(Column c) {
+		columns.add(c);
+		colIndicies.put(c.getName(), colIndicies.size());
+	}
+	public Table getRows(List<Integer> indices) {
+		Table retTable = new Table(getName(), new ArrayList<Column>());
+		for(Column c: columns) {
+			Column newCol = new Column(c.getName(), new ArrayList<Object>());
+			for(Integer i: indices) {
+				newCol.addData(c.getData(i));
+			}	
+			retTable.addColumn(newCol);
+		}
+		return retTable;
+	}
 	/**
 	 * Method to get the list of columns in the table
 	 * 
