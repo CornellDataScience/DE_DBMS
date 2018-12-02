@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import DBSystem.Column;
 import DBSystem.Tuple;
 import DBSystem.dbCatalog;
 import net.sf.jsqlparser.expression.BinaryExpression;

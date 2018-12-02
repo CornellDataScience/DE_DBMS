@@ -6,7 +6,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import DBSystem.Column;
+import DBSystem.ColumnTab;
 import DBSystem.Table;
 import net.sf.jsqlparser.statement.select.Distinct;
 
@@ -35,11 +35,11 @@ public class DuplicateElimination extends Operator {
 	public Table operate() {
 		Table t = child.operate();
 		// we will eliminate all duplicate tuples in this table t
-		List<Column> t_columns = t.getColumns();
+		List<ColumnTab> t_columns = t.getColumns();
 		// initialize new columns
-		List<Column> new_columns = new ArrayList<Column>();
-		for (Column c: t_columns) {
-			new_columns.add(new Column(c.getName(), new ArrayList<Object>()));
+		List<ColumnTab> new_columns = new ArrayList<ColumnTab>();
+		for (ColumnTab c: t_columns) {
+			new_columns.add(new ColumnTab(c.getName(), new ArrayList<Object>()));
 		}
 		
 		int index = 0, num = t_columns.get(0).getSize();
@@ -47,7 +47,7 @@ public class DuplicateElimination extends Operator {
 		while (index < num) {
 			List<Object> new_tuple = new ArrayList<Object>();
 			// get all the objects from the columns at index, compare to the last one
-			for (Column c: t_columns) {
+			for (ColumnTab c: t_columns) {
 				new_tuple.add(c.getData(index));
 			}
 			if (!prev_tuple.equals(new_tuple)) {

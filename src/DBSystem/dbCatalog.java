@@ -66,13 +66,13 @@ public class dbCatalog {
 					Tuple tuple = new Tuple(items);
 					tuples.add(tuple);
 				}
-				ArrayList<Column> columns = new ArrayList<Column>();
+				ArrayList<ColumnTab> columns = new ArrayList<ColumnTab>();
 				for (int i = 0; i < tuples.get(0).getSize(); i++) {
 					ArrayList<Object> items = new ArrayList<Object>();
 					for (int j = 0; j < tuples.size(); j++) {
 						items.add(tuples.get(j).get(i));
 					}
-					Column column = new Column(splitArray[i + 1], items);
+					ColumnTab column = new ColumnTab(splitArray[i + 1], items);
 					columns.add(column);
 				}
 				Table table = new Table(header[0],columns);

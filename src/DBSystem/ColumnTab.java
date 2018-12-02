@@ -2,11 +2,11 @@ package DBSystem;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Column {
+public class ColumnTab {
 	private String name;
 	private ArrayList<Object> data;
 
-	public Column(String name, ArrayList<Object> data) {
+	public ColumnTab(String name, ArrayList<Object> data) {
 		this.name = name;
 		this.data = data;
 	}

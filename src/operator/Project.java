@@ -5,7 +5,7 @@ import DBSystem.Table;
 import java.util.ArrayList;
 import java.util.List;
 
-import DBSystem.Column;
+import DBSystem.ColumnTab;
 import DBSystem.Tuple;
 import DBSystem.dbCatalog;
 
@@ -20,7 +20,7 @@ public class Project extends Operator {
 	Table table;
 	Table origTable;
 	String tableName;
-	List<Column> cols;
+	List<ColumnTab> cols;
 	List<String> colNames;
 	
 	
@@ -35,7 +35,7 @@ public class Project extends Operator {
 
 	@Override
 	public Table operate() {
-		List<Column> cols = new ArrayList<Column>();
+		List<ColumnTab> cols = new ArrayList<ColumnTab>();
 		for(String s: colNames) {
 			cols.add(table.getCol(s));
 		}

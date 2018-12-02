@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Stack;
 
 import DBSystem.Table;
-import DBSystem.Column;
+import DBSystem.ColumnTab;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.arithmetic.*;
 import net.sf.jsqlparser.expression.operators.conditional.*;
@@ -34,7 +34,7 @@ public class ExpressionVisitorClass implements ExpressionVisitor {
 	private Stack<Double> numberStack;
 	private Stack<Integer> ColumnOrNumberStack;
 	// 0 means a column, 1 means original column from table, 2 means modified column in ModifiedColumnStack
-	private Stack<Column> columnStack;
+	private Stack<ColumnTab> columnStack;
 
 	public ExpressionVisitorClass(Expression expression, Table table) {
 		this.expression = expression;
@@ -96,7 +96,7 @@ public class ExpressionVisitorClass implements ExpressionVisitor {
 	 * @param the
 	 *            Column to evaluate
 	 */
-	public void visit(Column arg0) {
+	public void visit(ColumnTab arg0) {
 		
 	}
 
@@ -150,7 +150,7 @@ public class ExpressionVisitorClass implements ExpressionVisitor {
 		// CoN1 is number, CoN2 is column
 		} else if (CoN1 == 0 && CoN2 == 1) {
 			double tmp1 = numberStack.pop();
-			Column columnToCompare = columnStack.pop();
+			ColumnTab columnToCompare = columnStack.pop();
 			// get all the indices of tuples which value in columnToCompare equals to tmp1
 			for (int i = 0; i < columnToCompare.getSize(); i++) {
 				if (columnToCompare.getData(i) instanceof Double && (Double)columnToCompare.getData(i) == tmp1) {

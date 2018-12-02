@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Table {
 	private String name;
-	private List<Column> columns;
+	private List<ColumnTab> columns;
 	private HashMap<String, Integer> colIndicies = new HashMap<String, Integer>();
 
 	/**
@@ -11,7 +11,7 @@ public class Table {
 	 * 
 	 * @return the constructed Tuple
 	 */
-	public Table(String name, List<Column> columns) {
+	public Table(String name, List<ColumnTab> columns) {
 		this.name = name;
 		this.columns = columns;
 		for (int i = 0; i < columns.size(); i++) {
@@ -36,10 +36,10 @@ public class Table {
 			}
 		}
 
-		ArrayList<Column> columnsGenerated = new ArrayList<Column>();
+		ArrayList<ColumnTab> columnsGenerated = new ArrayList<ColumnTab>();
 		for (int i = 0; i < tupleSize; i++) {
 			// TODO column name ???
-			columnsGenerated.add(new Column("COLUMN", columnsDataGenerated.get(0)));
+			columnsGenerated.add(new ColumnTab("COLUMN", columnsDataGenerated.get(0)));
 		}
 		this.columns = columnsGenerated;
 	}
@@ -48,7 +48,7 @@ public class Table {
 	 * @param name of the column needed to be accessed 
 	 * @return the column from the name of the column  
 	 */
-	public Column getCol(String name) {
+	public ColumnTab getCol(String name) {
 		return columns.get(colIndicies.get(name));
 	}
 	
@@ -66,14 +66,14 @@ public class Table {
 	 * @param indices indices of rows wanted
 	 * @return a Table instance of the rows
 	 */
-	public void addColumn(Column c) {
+	public void addColumn(ColumnTab c) {
 		columns.add(c);
 		colIndicies.put(c.getName(), colIndicies.size());
 	}
 	public Table getRows(List<Integer> indices) {
-		Table retTable = new Table(getName(), new ArrayList<Column>());
-		for(Column c: columns) {
-			Column newCol = new Column(c.getName(), new ArrayList<Object>());
+		Table retTable = new Table(getName(), new ArrayList<ColumnTab>());
+		for(ColumnTab c: columns) {
+			ColumnTab newCol = new ColumnTab(c.getName(), new ArrayList<Object>());
 			for(Integer i: indices) {
 				newCol.addData(c.getData(i));
 			}	
@@ -86,7 +86,7 @@ public class Table {
 	 * 
 	 * @return the list of columns in the table
 	 */
-	public List<Column> getColumns() {
+	public List<ColumnTab> getColumns() {
 		return columns;
 	}
 	

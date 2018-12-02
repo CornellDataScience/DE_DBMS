@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DBSystem.Table;
-import DBSystem.Column;
+import DBSystem.ColumnTab;
 import DBSystem.Tuple;
 
 public abstract class Operator {

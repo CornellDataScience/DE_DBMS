@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import DBSystem.Column;
+import DBSystem.ColumnTab;
 import DBSystem.Tuple;
 import DBSystem.dbCatalog;
 import net.sf.jsqlparser.expression.Expression;
@@ -38,7 +38,7 @@ public class Join extends Operator {
 	@Override
 	public Table operate() {
 		//Converting list of column names to columns 
-		List<Column> cols = new ArrayList<Column>();
+		List<ColumnTab> cols = new ArrayList<ColumnTab>();
 		for(int i = 0; i < tables.size(); i ++) {
 			cols.add(tables.get(i).getCol(colNames.get(i)));
 		}

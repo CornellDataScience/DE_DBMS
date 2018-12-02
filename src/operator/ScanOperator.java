@@ -1,7 +1,6 @@
 package operator;
 
 import DBSystem.Table;
-import DBSystem.Column;
 import DBSystem.Tuple;
 import DBSystem.dbCatalog;
 
