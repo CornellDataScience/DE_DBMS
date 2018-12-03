@@ -3,6 +3,13 @@ package DBSystem;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import javafx.util.Pair;
+import java.lang.Object.*;
 
 public class ColumnTab {
 	private String name;
@@ -62,8 +69,11 @@ public class ColumnTab {
 	 * @return the column's name and data
 	 */
 	public int[] sortedIndices() {
-		System.out.print(data.toArray());
-		int[] order = argsort(data.toArray(), true);
+		double[] data_temp = new double[data.size()];
+		for (int i = 0; i < data.size(); i++) {
+			data_temp[i] = data.get(i);
+		}
+		int[] order = argSort(data_temp, true);
 		// We assume everything to be double in the table
 		return order;
 	}
@@ -73,14 +83,12 @@ public class ColumnTab {
 	 * 
 	 * @return a new column with the order in order array
 	 */
-	public ColumnTab sortWithIndices(int[] order) {
+	public void sortWithIndices(int[] order) {
 		Double[] new_data = new Double[getSize()];
 		for (int i = 0; i < order.length; i++) {
-			// fill order[i] with data[i]
-			new_data[order[i]] = getData(i);
+			new_data[i] = getData(order[i]);
 		}
-		ColumnTab newColumn = new ColumnTab("SortedColumn", new ArrayList<Double>(Arrays.asList(new_data)));
-		return newColumn;
+		data = new ArrayList<Double>(Arrays.asList(new_data));
 	}
 
 	/**
@@ -103,63 +111,16 @@ public class ColumnTab {
 		for (Double d : data) {
 			cloneData.add(d.doubleValue());
 		}
-		ColumnTab colClone = new ColumnTab(name, cloneData);
+		ColumnTab colClone = new ColumnTab(name + "clone", cloneData);
 		return colClone;
 	}
 	
-	/**
-	 * Method to clone an object
-	 * 
-	 * @return the cloned object
-	 */
-	private static Object cloneObject(Object obj) {
-		try {
-			Object clone = obj.getClass().newInstance();
-			for (Field field : obj.getClass().getDeclaredFields()) {
-				field.setAccessible(true);
-				if (field.get(obj) == null || Modifier.isFinal(field.getModifiers())) {
-					continue;
-				}
-				if (field.getType().isPrimitive() || field.getType().equals(String.class)
-						|| field.getType().getSuperclass().equals(Number.class)
-						|| field.getType().equals(Boolean.class)) {
-					field.set(clone, field.get(obj));
-				} else {
-					Object childObj = field.get(obj);
-					if (childObj == obj) {
-						field.set(clone, clone);
-					} else {
-						field.set(clone, cloneObject(field.get(obj)));
-					}
-				}
-			}
-			return clone;
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	/**
-	 * Helper function for argsort in Java
-	 * 
-	 * @param a
-	 * @param ascending
-	 * @return
-	 */
-	public static int[] argsort(Object[] a, final boolean ascending) {
-		Integer[] indexes = new Integer[a.length];
-		for (int i = 0; i < indexes.length; i++) {
-			indexes[i] = i;
-		}
-		Arrays.sort(indexes, new Comparator<Integer>() {
-			@Override
-			public int compare(final Integer i1, final Integer i2) {
-				return (ascending ? 1 : -1) * Double.compare((Double) a[i1], (Double) a[i2]);
-			}
-		});
-		int[] ret = new int[indexes.length];
-		for (int i = 0; i < ret.length; i++)
-			ret[i] = indexes[i];
-		return ret;
-	}
+	public static int[] argSort(final double[] a, final boolean ascending) {
+        final Integer[] indexes = new Integer[a.length];
+        for (int i = 0; i < indexes.length; i++) {
+            indexes[i] = i;
+        }
+        Arrays.sort(indexes, (i1, i2) -> (ascending ? 1 : -1) * Double.compare(a[i1], a[i2]));
+        return Stream.of(indexes).mapToInt(i -> i).toArray();
+    }
 }

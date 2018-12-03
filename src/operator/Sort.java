@@ -31,6 +31,7 @@ public class Sort extends Operator {
 			ColumnTab new_c = c.clone();
 			new_c.sortWithIndices(indices);
 			cols.add(new_c);
+			System.out.println(new_c);
 		}
 		return new Table("sortedTable", cols);
 	}
