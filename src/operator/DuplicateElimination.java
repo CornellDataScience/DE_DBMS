@@ -39,13 +39,13 @@ public class DuplicateElimination extends Operator {
 		// initialize new columns
 		List<ColumnTab> new_columns = new ArrayList<ColumnTab>();
 		for (ColumnTab c: t_columns) {
-			new_columns.add(new ColumnTab(c.getName(), new ArrayList<Object>()));
+			new_columns.add(new ColumnTab(c.getName(), new ArrayList<Double>()));
 		}
 		
 		int index = 0, num = t_columns.get(0).getSize();
-		List<Object> prev_tuple = new ArrayList<Object>();
+		List<Double> prev_tuple = new ArrayList<Double>();
 		while (index < num) {
-			List<Object> new_tuple = new ArrayList<Object>();
+			List<Double> new_tuple = new ArrayList<Double>();
 			// get all the objects from the columns at index, compare to the last one
 			for (ColumnTab c: t_columns) {
 				new_tuple.add(c.getData(index));
@@ -73,7 +73,7 @@ public class DuplicateElimination extends Operator {
 		PrintStream out = new PrintStream(new FileOutputStream(outputdir + "/query" + queryNum + ".txt"));
 		Table t = operate();
 		System.setOut(out);
-		System.out.println(t);
+		System.out.println(t.toString());
 		out.close();
 	}
 	

@@ -36,19 +36,15 @@ public class Parser {
 					// there is no table to join
 					if (s.getJoins() == null) {
 						String tableName;
-						if (s.getFromItem().getAlias() != null)
-							tableName = dbCatalog.setAlias(s.getFromItem());
-						else
-							tableName = s.getFromItem().toString();
+						tableName = s.getFromItem().toString();
 						Operator ScanOp = new ScanOperator(tableName);
-//						Select selOp = new Select(ScanOp, s.getWhere());
-//						Project projOp = new Project(selOp, s.getSelectItems());
-//						Sort sortOp = new Sort(projOp, s.getOrderByElements());
-//						DuplicateElimination distOp = new DuplicateElimination(sortOp, s.getDistinct(), args[1], queryNumber);
-//						distOp.dump();
+						SelectOperator selOp = new SelectOperator(ScanOp, s.getWhere());
+						Project projOp = new Project(selOp, s.getSelectItems());
+						Sort sortOp = new Sort(projOp, s.getOrderByElements());
+						DuplicateElimination distOp = new DuplicateElimination(sortOp, s.getDistinct(), args[1], queryNumber);
+						distOp.dump();
 					} 
-					
-					
+					//TODO there is table to join
 					
 					
 					

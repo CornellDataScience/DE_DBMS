@@ -21,22 +21,20 @@ public class Project extends Operator {
 	Table origTable;
 	String tableName;
 	List<ColumnTab> cols;
-	List<String> colNames;
+	List<Object> selectItems;
 	
-	
-
-	public Project(String tableName, List<String> colNames) {
-		table = dbCatalog.getTable(tableName);
-		this.tableName = tableName;
-		origTable = table;
-		this.colNames = colNames;
-		
+	public Project(Operator op, List selectItems) {
+		table = op.operate();
+		this.selectItems = selectItems;		
 	}
 
-	@Override
 	public Table operate() {
+		if (selectItems.toString().equals("[*]"))
+			return table;
 		List<ColumnTab> cols = new ArrayList<ColumnTab>();
-		for(String s: colNames) {
+		for(Object o : selectItems) {
+			String s = o.toString().split("\\.")[1];
+			// o.toString().split("\\.");
 			cols.add(table.getCol(s));
 		}
 		this.cols = cols;

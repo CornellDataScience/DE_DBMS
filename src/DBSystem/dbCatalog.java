@@ -62,13 +62,17 @@ public class dbCatalog {
 				brtmp = new BufferedReader(tmp);
 				ArrayList<Tuple> tuples = new ArrayList<Tuple>();
 				while ((dataLine = brtmp.readLine()) != null) {
-					List<Object> items = Arrays.asList(dataLine.split("\\s*,\\s*"));
-					Tuple tuple = new Tuple(items);
+					List<String> items = Arrays.asList(dataLine.split("\\s*,\\s*"));
+					List<Double> itemsInDouble = new ArrayList<Double>();
+					for (String s: items) {
+						itemsInDouble.add(Double.valueOf(s));
+					}
+					Tuple tuple = new Tuple(itemsInDouble);
 					tuples.add(tuple);
 				}
 				ArrayList<ColumnTab> columns = new ArrayList<ColumnTab>();
 				for (int i = 0; i < tuples.get(0).getSize(); i++) {
-					ArrayList<Object> items = new ArrayList<Object>();
+					ArrayList<Double> items = new ArrayList<Double>();
 					for (int j = 0; j < tuples.size(); j++) {
 						items.add(tuples.get(j).get(i));
 					}

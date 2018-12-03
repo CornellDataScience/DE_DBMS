@@ -27,7 +27,7 @@ public class Table {
 	 */
 	public Table(String name, ArrayList<Tuple> tuples) {
 		this.name = name;
-		ArrayList<ArrayList<Object>> columnsDataGenerated = new ArrayList<ArrayList<Object>>();
+		ArrayList<ArrayList<Double>> columnsDataGenerated = new ArrayList<ArrayList<Double>>();
 		int tupleSize = tuples.get(0).getSize();
 		
 		for (Tuple t : tuples) {
@@ -61,6 +61,7 @@ public class Table {
 	public String getName() {
 		return name;
 	}
+	
 	/** This function gets the rows at given indicies
 	 * 
 	 * @param indices indices of rows wanted
@@ -70,10 +71,11 @@ public class Table {
 		columns.add(c);
 		colIndicies.put(c.getName(), colIndicies.size());
 	}
+	
 	public Table getRows(List<Integer> indices) {
 		Table retTable = new Table(getName(), new ArrayList<ColumnTab>());
 		for(ColumnTab c: columns) {
-			ColumnTab newCol = new ColumnTab(c.getName(), new ArrayList<Object>());
+			ColumnTab newCol = new ColumnTab(c.getName(), new ArrayList<Double>());
 			for(Integer i: indices) {
 				newCol.addData(c.getData(i));
 			}	
@@ -81,6 +83,19 @@ public class Table {
 		}
 		return retTable;
 	}
+	
+	public Table getRows(Set<Integer> indices) {
+		Table retTable = new Table(getName(), new ArrayList<ColumnTab>());
+		for(ColumnTab c: columns) {
+			ColumnTab newCol = new ColumnTab(c.getName(), new ArrayList<Double>());
+			for(Integer i: indices) {
+				newCol.addData(c.getData(i));
+			}	
+			retTable.addColumn(newCol);
+		}
+		return retTable;
+	}
+	
 	/**
 	 * Method to get the list of columns in the table
 	 * 
@@ -97,5 +112,23 @@ public class Table {
 	 */
 	public int getTupleNum() {
 		return columns.get(0).getSize();
+	}
+	
+	/**
+	 * Method to convert the Table to String
+	 * 
+	 * @return the string representation of the Table
+	 */
+	public String toString() {
+		int size = getTupleNum();
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < columns.size(); j++) {
+				ColumnTab c = columns.get(j);
+				System.out.print(c.getData(i));
+				if (j < columns.size() - 1) System.out.print(",");
+			}
+			System.out.println();
+		}
+		return "";
 	}
 }

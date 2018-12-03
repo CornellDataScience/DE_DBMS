@@ -2,6 +2,7 @@ package operator;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 import DBSystem.Table;
@@ -10,6 +11,7 @@ import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.arithmetic.*;
 import net.sf.jsqlparser.expression.operators.conditional.*;
 import net.sf.jsqlparser.expression.operators.relational.*;
+import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.SubSelect;
 
 public class ExpressionVisitorClass implements ExpressionVisitor {
@@ -48,10 +50,22 @@ public class ExpressionVisitorClass implements ExpressionVisitor {
 	 * 
 	 * @return whether hashset containing all the ids of tuples evaluated
 	 */
-	public HashSet<Integer> evaluate() {
+	public Set<Integer> evaluate() {
 		return indicesStack.peek();
 	}
 
+	/**
+	 * Method to push the Column to the column stack	
+	 *  
+	 * @param the
+	 *            Column to evaluate
+	 */
+	@Override
+	public void visit(Column arg0) {
+		ColumnTab col = table.getCol(arg0.getColumnName());
+		columnStack.push(col);
+	}
+	
 	/**
 	 * Method to attach the evaluation of AndExpression depending on the left and
 	 * right side
@@ -88,16 +102,6 @@ public class ExpressionVisitorClass implements ExpressionVisitor {
 		HashSet<Integer> intersection = new HashSet<Integer>(tmp1);
 		intersection.addAll(tmp2);
 		indicesStack.push(intersection);
-	}
-
-	/**
-	 * Method to attach the value of the Expression to NumberStack
-	 * 
-	 * @param the
-	 *            Column to evaluate
-	 */
-	public void visit(ColumnTab arg0) {
-		
 	}
 
 	/**
@@ -147,20 +151,28 @@ public class ExpressionVisitorClass implements ExpressionVisitor {
 				// create a new set containing no id
 				indicesStack.push(result);
 			}
-		// CoN1 is number, CoN2 is column
-		} else if (CoN1 == 0 && CoN2 == 1) {
-			double tmp1 = numberStack.pop();
+		// CoN1 is number, CoN2 is column; or CoN1 is column, CoN2 is number
+		} else if ((CoN1 == 0 && CoN2 == 1) || (CoN1 == 1 && CoN2 == 0)) {
+			double tmp = numberStack.pop();
 			ColumnTab columnToCompare = columnStack.pop();
 			// get all the indices of tuples which value in columnToCompare equals to tmp1
 			for (int i = 0; i < columnToCompare.getSize(); i++) {
-				if (columnToCompare.getData(i) instanceof Double && (Double)columnToCompare.getData(i) == tmp1) {
+				if ((Double)columnToCompare.getData(i) == tmp) {
 					result.add(i);
 				}
 			}
 			indicesStack.push(result);
-		} 
-		// TODO if one of them is column?
-		// return all the indices that matches the boolean value
+		// CoN1 is column, CoN2 is column
+		} else if (CoN1 == 1 && CoN2 == 1) {
+			ColumnTab column1 = columnStack.pop();
+			ColumnTab column2 = columnStack.pop();
+			for (int i = 0; i < column1.getSize(); i++) {
+				if (column1.getData(i).equals(column2.getData(i))) {
+					result.add(i);
+				}
+			}
+			indicesStack.push(result);
+		}
 	}
 
 	/**
@@ -405,12 +417,6 @@ public class ExpressionVisitorClass implements ExpressionVisitor {
 
 	@Override
 	public void visit(BitwiseXor arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(net.sf.jsqlparser.schema.Column arg0) {
 		// TODO Auto-generated method stub
 		
 	}

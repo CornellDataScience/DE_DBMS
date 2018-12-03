@@ -10,7 +10,7 @@ public class ScanOperator extends Operator {
 	 * ScanOperator which is the basic component in the operator tree. The
 	 * operator tree we constructed should have scan operator as its leaves
 	 * 
-	 * @author Akhil Gopu, Rong Tan
+	 * @author Rong Tan
 	 */
 
 	Table table;
@@ -18,20 +18,15 @@ public class ScanOperator extends Operator {
 	public ScanOperator(String tableName) {
 		table = dbCatalog.getTable(tableName);
 	}
-	public Table getTable() {
+
+	@Override
+	public Table operate() {
 		return table;
 	}
-
-	
 
 	@Override
 	public void reset() {
 	}
 
-	@Override
-	public Table operate() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

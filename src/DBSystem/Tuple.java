@@ -7,14 +7,14 @@ public class Tuple {
 	 * 
 	 */
 
-	private List<Object> data = new ArrayList<Object>(); // Contains all the
+	private List<Double> data = new ArrayList<Double>(); // Contains all the
 															// data in the tuple
 	/**
 	 * Method to construct Tuple from items
 	 * 
 	 * @return the constructed Tuple
 	 */
-	public Tuple(List<Object> items) {
+	public Tuple(List<Double> items) {
 		data = items;
 	}
 	
@@ -37,7 +37,7 @@ public class Tuple {
 	 * 
 	 * @return the tuple itself
 	 */
-	public List<Object> getTuple() {
+	public List<Double> getTuple() {
 		return data;
 	}
 	
@@ -55,7 +55,7 @@ public class Tuple {
 	 * 
 	 * @return the ith position in the Tuple
 	 */
-	public Object get(int i) {
+	public Double get(int i) {
 		return data.get(i);
 	}
 
@@ -63,7 +63,7 @@ public class Tuple {
 	 * Method to add an Object to the Tuple
 	 * 
 	 */
-	public void add(Object o) {
+	public void add(Double o) {
 		data.add(o);
 	}
 	
