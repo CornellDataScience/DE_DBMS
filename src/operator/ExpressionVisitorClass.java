@@ -35,13 +35,16 @@ public class ExpressionVisitorClass implements ExpressionVisitor {
 	private Stack<HashSet<Integer>> indicesStack;
 	private Stack<Double> numberStack;
 	private Stack<Integer> ColumnOrNumberStack;
-	// 0 means a column, 1 means original column from table, 2 means modified column in ModifiedColumnStack
+	// 0 means a number, 1 means column
 	private Stack<ColumnTab> columnStack;
 
 	public ExpressionVisitorClass(Expression expression, Table table) {
 		this.expression = expression;
 		this.table = table;
 		indicesStack = new Stack<HashSet<Integer>>();
+		numberStack = new Stack<Double>();
+		ColumnOrNumberStack = new Stack<Integer>();
+		columnStack = new Stack<ColumnTab>();
 	}
 
 	/**
@@ -64,6 +67,7 @@ public class ExpressionVisitorClass implements ExpressionVisitor {
 	public void visit(Column arg0) {
 		ColumnTab col = table.getCol(arg0.getColumnName());
 		columnStack.push(col);
+		ColumnOrNumberStack.push(1);
 	}
 	
 	/**

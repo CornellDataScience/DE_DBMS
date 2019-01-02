@@ -9,7 +9,7 @@ import DBSystem.ColumnTab;
 import DBSystem.Tuple;
 import DBSystem.dbCatalog;
 
-public class Project extends Operator {
+public class ProjectOperator extends Operator {
 
 	/**
 	 * Project Operator is used when the select keyword is called without 
@@ -23,7 +23,7 @@ public class Project extends Operator {
 	List<ColumnTab> cols;
 	List<Object> selectItems;
 	
-	public Project(Operator op, List selectItems) {
+	public ProjectOperator(Operator op, List selectItems) {
 		table = op.operate();
 		this.selectItems = selectItems;		
 	}

@@ -10,7 +10,7 @@ import DBSystem.ColumnTab;
 import DBSystem.Table;
 import net.sf.jsqlparser.statement.select.Distinct;
 
-public class DuplicateElimination extends Operator {
+public class DuplicateEliminationOperator extends Operator {
 
 	/**
 	 * DuplicateEliminationOperator which exits as long as there is a DISTICT
@@ -23,7 +23,7 @@ public class DuplicateElimination extends Operator {
 	private int queryNum;
 	private String outputdir;
 	
-	public DuplicateElimination(Operator sortOp, Distinct distinct, String loc, int queryNum) {
+	public DuplicateEliminationOperator(Operator sortOp, Distinct distinct, String loc, int queryNum) {
 		child = sortOp;
 		dist = distinct;
 		outputdir = loc;
@@ -34,6 +34,8 @@ public class DuplicateElimination extends Operator {
 	@Override
 	public Table operate() {
 		Table t = child.operate();
+		// no need for duplicate elimination
+		if (dist == null) return t;
 		// we will eliminate all duplicate tuples in this table t
 		List<ColumnTab> t_columns = t.getColumns();
 		// initialize new columns

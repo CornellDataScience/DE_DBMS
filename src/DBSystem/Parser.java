@@ -39,9 +39,9 @@ public class Parser {
 						tableName = s.getFromItem().toString();
 						Operator ScanOp = new ScanOperator(tableName);
 						SelectOperator selOp = new SelectOperator(ScanOp, s.getWhere());
-						Project projOp = new Project(selOp, s.getSelectItems());
-						Sort sortOp = new Sort(projOp, s.getOrderByElements());
-						DuplicateElimination distOp = new DuplicateElimination(sortOp, s.getDistinct(), args[1], queryNumber);
+						ProjectOperator projOp = new ProjectOperator(selOp, s.getSelectItems());
+						SortOperator sortOp = new SortOperator(projOp, s.getOrderByElements());
+						DuplicateEliminationOperator distOp = new DuplicateEliminationOperator(sortOp, s.getDistinct(), args[1], queryNumber);
 						distOp.dump();
 					} 
 					//TODO there is table to join

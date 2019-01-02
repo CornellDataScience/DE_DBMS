@@ -6,12 +6,12 @@ import java.util.List;
 import DBSystem.ColumnTab;
 import DBSystem.Table;
 
-public class Sort extends Operator {
+public class SortOperator extends Operator {
 
 	Table table;
 	List ElementsToSort;
 
-	public Sort(Operator op, List ElementsToSort) {
+	public SortOperator(Operator op, List ElementsToSort) {
 		table = op.operate();
 		this.ElementsToSort = ElementsToSort;
 	}
