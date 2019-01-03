@@ -36,7 +36,10 @@ public class Parser {
 					// there is no table to join
 					if (s.getJoins() == null) {
 						String tableName;
-						tableName = s.getFromItem().toString();
+						if (s.getFromItem().getAlias() != null)
+							tableName = dbCatalog.setAlias(s.getFromItem());
+						else
+							tableName = s.getFromItem().toString();
 						Operator ScanOp = new ScanOperator(tableName);
 						SelectOperator selOp = new SelectOperator(ScanOp, s.getWhere());
 						ProjectOperator projOp = new ProjectOperator(selOp, s.getSelectItems());
